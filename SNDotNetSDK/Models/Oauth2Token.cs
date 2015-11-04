@@ -1,4 +1,6 @@
 ﻿
+using Newtonsoft.Json;
+
 namespace SNDotNetSDK.Models
 {
     /**
@@ -8,18 +10,22 @@ namespace SNDotNetSDK.Models
      */
     public class Oauth2Token
     {
+		[JsonProperty("access_token")]
         public string AccessToken { get; set; }
 
-        public string TokenType { get; set; }
+		[JsonProperty("token_type")]
+		public string TokenType { get; set; }
 
-        public string RefreshToken { get; set; }
+		[JsonProperty("refresh_token")]
+		public string RefreshToken { get; set; }
 
-        public string Scope { get; set; }
+		public string Scope { get; set; }
 
-        public int ExpiresIn { get; set; }
+		[JsonProperty("expires_in")]
+		public int ExpiresIn { get; set; }
 
-        public string Error { get; set; }
+		public string Error { get; set; }
 
-        public int Code { get; set; }
+		public int Code { get; set; }
     }
 }

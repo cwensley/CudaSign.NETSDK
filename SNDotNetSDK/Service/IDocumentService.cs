@@ -1,6 +1,7 @@
 ﻿using SNDotNetSDK.Models;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SNDotNetSDK.Service
 {
@@ -11,23 +12,27 @@ namespace SNDotNetSDK.Service
      */
     public interface IDocumentService
     {
-        Document Create(Oauth2Token token, Document documentPath);
+		Document Create(Oauth2Token token, string fileName, byte[] data);
 
-        Document[] GetDocuments(Oauth2Token token);
+		Document Create(Oauth2Token token, string fileName, Stream stream);
+
+		Document Create(Oauth2Token token, string fileName);
+
+        IEnumerable<Document> GetDocuments(Oauth2Token token);
 
         Document GetDocumentbyId(Oauth2Token token, string id);
 
-        Document UpdateDocument(Oauth2Token token, Dictionary<string, List<Fields>> fieldsMap, string id);
+        string UpdateDocument(Oauth2Token token, DocumentFieldMap fieldsMap, string id);
 
-        string Invite(Oauth2Token token, Invitation invitation, string id);
+        string Invite(Oauth2Token token, Invitation invitation, string id, bool sendEmail = false);
 
-        string RoleBasedInvite(Oauth2Token token, EmailSignature emailSignature, string id);
+        string RoleBasedInvite(Oauth2Token token, EmailSignature emailSignature, string id, bool sendEmail = false);
 
         string CancelInvite(Oauth2Token token, string id);
 
         Document ShareDocument(Oauth2Token token, string id);
 
-        DocumentHistory[] GetDocumentHistory(Oauth2Token token, string id);
+        IEnumerable<DocumentHistory> GetDocumentHistory(Oauth2Token token, string id);
 
         Template CreateTemplate(Oauth2Token token, Template template);
 
@@ -45,6 +50,10 @@ namespace SNDotNetSDK.Service
 
         Document CreateSimpleFieldTag(Oauth2Token token, Document documentPath);
 
-        Document CreateDocumentFieldExtract(Oauth2Token token, Document documentPath);
-    }
+		Document CreateDocumentFieldExtract(Oauth2Token token, string filePath);
+
+		Document CreateDocumentFieldExtract(Oauth2Token token, string fileName, byte[] data);
+
+		Document CreateDocumentFieldExtract(Oauth2Token token, string fileName, Stream stream);
+	}
 }

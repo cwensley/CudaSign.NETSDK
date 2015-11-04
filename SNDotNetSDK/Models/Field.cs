@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 namespace SNDotNetSDK.Models
 {
     /**
@@ -6,8 +7,10 @@ namespace SNDotNetSDK.Models
      * 
      * This model is useful to build the Fields Object to have different types of files like, CheckBox, Texts and Initials.
      */
-    public class Fields
+    public class Field
     {
+		List<Radio> radio = new List<Radio>();
+
         public int X { get; set; }
 
         public int Y { get; set; }
@@ -16,6 +19,7 @@ namespace SNDotNetSDK.Models
 
         public int Height { get; set; }
 
+		[JsonProperty("page_number")]
         public int PageNumber { get; set; }
 
         public string Role { get; set; }
@@ -24,9 +28,15 @@ namespace SNDotNetSDK.Models
 
         public string Type { get; set; }
 
-        public string RoleId { get; set; }
+		[JsonProperty("role_id")]
+		public string RoleId { get; set; }
 
-        public List<Fields> Radio { get; set; }
+		[JsonProperty("user_id")]
+		public string UserId { get; set; }
+
+		public string Created { get; set; }
+
+        public List<Radio> Radio { get { return radio; } }
 
         public string Email { get; set; }
     }

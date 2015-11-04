@@ -7,23 +7,11 @@ namespace SNDotNetSDK.Models
      * 
      * This model object is used to place the radio button on the document.
      */
-    public class Radio : Fields
+    public class Radio : Field
     {
-        public int Width { get; set; }
-
-        public int Height { get; set; }
-
-        public int X { get; set; }
-
-        public int Y { get; set; }
-
-        public int PageNumber { get; set; }
-
         [JsonProperty("checked")]
         public int Check { get; set; }
 
         public string Value { get; set; }
-
-        public string Created { get; set; }
     }
 }

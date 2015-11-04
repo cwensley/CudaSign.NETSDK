@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 namespace SNDotNetSDK.Models
 {
     /**
@@ -8,10 +9,12 @@ namespace SNDotNetSDK.Models
      */
     public class Invitation
     {
+		[JsonProperty("from")]
         public string From { get; set; }
 
-        public string To { get; set; }
+		[JsonProperty("to")]
+		public string To { get; set; }
 
-        public bool OriginatorPay { get; set; }
+		//public bool OriginatorPay { get; set; }
     }
 }

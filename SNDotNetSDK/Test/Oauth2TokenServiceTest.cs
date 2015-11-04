@@ -34,12 +34,12 @@ namespace SNDotNetSDK.Test
             user.FirstName = "firstName";
             user.LastName = "LastName";
 
-            User resultUser = cudasign.userService.Create(user);
+            User resultUser = cudasign.UserService.Create(user);
 
             Assert.IsNotNull("No user id from creating user", resultUser.Id);
             resultUser.Password = "fakePassword";
 
-            Oauth2Token requestedToken = cudasign.authenticationService.RequestToken(resultUser);
+            Oauth2Token requestedToken = cudasign.AuthenticationService.RequestToken(resultUser);
             Assert.IsNotNull("Access Token", requestedToken.AccessToken);
         }
 
@@ -53,15 +53,15 @@ namespace SNDotNetSDK.Test
             user.FirstName = "firstName";
             user.LastName = "LastName";
 
-            User resultUser = cudasign.userService.Create(user);
+            User resultUser = cudasign.UserService.Create(user);
 
             Assert.IsNotNull("No user id from creating user", resultUser.Id);
             resultUser.Password = "fakePassword";
 
-            Oauth2Token requestedToken = cudasign.authenticationService.RequestToken(resultUser);
+            Oauth2Token requestedToken = cudasign.AuthenticationService.RequestToken(resultUser);
             Assert.IsNotNull("Access Token", requestedToken.AccessToken);
 
-            Oauth2Token verifiedToken = cudasign.authenticationService.Verify(requestedToken.AccessToken);
+            Oauth2Token verifiedToken = cudasign.AuthenticationService.Verify(requestedToken.AccessToken);
 
             Assert.IsNotNull("Verify Token", verifiedToken.AccessToken);
 

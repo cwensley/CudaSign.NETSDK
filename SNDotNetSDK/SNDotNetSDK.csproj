@@ -75,12 +75,15 @@
     <Compile Include="Models\Checkbox.cs" />
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Models\Document.cs" />
+    <Compile Include="Models\DocumentFieldMap.cs" />
     <Compile Include="Models\DocumentHistory.cs" />
+    <Compile Include="Models\Signature.cs" />
     <Compile Include="ServiceImpl\DocumentService.cs" />
+    <Compile Include="ServiceImpl\RequestExtensions.cs" />
     <Compile Include="Test\DocumentServiceTest.cs" />
     <Compile Include="Models\EmailSignature.cs" />
     <Compile Include="Models\EventSubscription.cs" />
-    <Compile Include="Models\Fields.cs" />
+    <Compile Include="Models\Field.cs" />
     <Compile Include="Service\IAuthenticationService.cs" />
     <Compile Include="Service\IDocumentService.cs" />
     <Compile Include="Models\Invitation.cs" />

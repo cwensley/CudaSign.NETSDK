@@ -6,15 +6,9 @@ namespace SNDotNetSDK.Models
      *
      * This model class is used to place the Texts on the documents for a given document ID.
      */
-    public class Text : Fields
+    public class Text : Field
     {
         public int Size { get; set; }
-
-        public int X { get; set; }
-
-        public int Y { get; set; }
-
-        public int PageNumber { get; set; }
 
         public string Font { get; set; }
 

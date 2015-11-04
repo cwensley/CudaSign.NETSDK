@@ -6,16 +6,7 @@ namespace SNDotNetSDK.Models
      * 
      * This class is used to create the check box on the document
      */
-    public class Checkbox : Fields
+    public class Checkbox : Field
     {
-        public int X { get; set; }
-
-        public int Y { get; set; }
-
-        public int Width { get; set; }
-
-        public int Height { get; set; }
-
-        public int PageNumber { get; set; }
     }
 }

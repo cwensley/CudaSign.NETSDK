@@ -16,16 +16,16 @@ namespace SNDotNetSDK
 
         private void InitServices()
         {
-            userService = new UserService(config);
-            authenticationService = new OAuth2TokenService(config);
-            documentService = new DocumentService(config);
+            UserService = new UserService(config);
+            AuthenticationService = new OAuth2TokenService(config);
+            DocumentService = new DocumentService(config);
         }
 
-        public IUserService userService { get; private set; }
+        public IUserService UserService { get; private set; }
 
-        public IAuthenticationService authenticationService { get; private set; }
+        public IAuthenticationService AuthenticationService { get; private set; }
 
-        public IDocumentService documentService { get; private set; }
+        public IDocumentService DocumentService { get; private set; }
 
     }
 }
