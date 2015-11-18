@@ -12,11 +12,11 @@ namespace SNDotNetSDK.Service
      */
     public interface IDocumentService
     {
-		Document Create(Oauth2Token token, string fileName, byte[] data);
+		Document Create(Oauth2Token token, string fileName, byte[] data, bool checkFields = false);
 
-		Document Create(Oauth2Token token, string fileName, Stream stream);
+		Document Create(Oauth2Token token, string fileName, Stream stream, bool checkFields = false);
 
-		Document Create(Oauth2Token token, string fileName);
+		Document Create(Oauth2Token token, string fileName, bool checkFields = false);
 
         IEnumerable<Document> GetDocuments(Oauth2Token token);
 

@@ -64,16 +64,20 @@ namespace SNDotNetSDK.ServiceImpl
 		/*
          * This method is used to create  or POST the document for a given user in the SignNow Application
          */
-		public Document Create(Oauth2Token token, string filePath)
+		public Document Create(Oauth2Token token, string filePath, bool checkFields = false)
 		{
 			if (token == null)
 				throw new ArgumentNullException("token");
 			if (filePath == null)
 				throw new ArgumentNullException("filePath");
-			return CreateInternal(token, filePath, null);
+			return CreateInternal(token, filePath, null, "/document", request =>
+			{
+				if (checkFields)
+					request.AddParameter("check_fields", "true");
+			});
 		}
 
-		public Document Create(Oauth2Token token, string fileName, Stream stream)
+		public Document Create(Oauth2Token token, string fileName, Stream stream, bool checkFields = false)
 		{
 			if (token == null)
 				throw new ArgumentNullException("token");
@@ -84,11 +88,11 @@ namespace SNDotNetSDK.ServiceImpl
 			using (var ms = new MemoryStream())
 			{
 				stream.CopyTo(ms);
-				return CreateInternal(token, fileName, ms.ToArray());
+				return Create(token, fileName, ms.ToArray(), checkFields);
 			}
 		}
 
-		public Document Create(Oauth2Token token, string fileName, byte[] data)
+		public Document Create(Oauth2Token token, string fileName, byte[] data, bool checkFields = false)
 		{
 			if (token == null)
 				throw new ArgumentNullException("token");
@@ -96,12 +100,20 @@ namespace SNDotNetSDK.ServiceImpl
 				throw new ArgumentNullException("data");
 			if (fileName == null)
 				throw new ArgumentNullException("filePath");
-			return CreateInternal(token, fileName, data);
+
+			return CreateInternal(token, fileName, data, "/document", request =>
+			{
+				if (checkFields)
+					request.AddParameter("check_fields", "true");
+			});
 		}
 
-		Document CreateInternal(Oauth2Token token, string filePath, byte[] data, string url = "/document")
+		Document CreateInternal(Oauth2Token token, string filePath, byte[] data, string url, Action<IRestRequest> updateRequest = null)
 		{
 			var request = token.CreateRequest(url, Method.POST, contentType: "multipart/form-data");
+			if (updateRequest != null)
+				updateRequest(request);
+
 			if (data == null)
 				request.AddFile("file", filePath);
 			else
