@@ -11,7 +11,7 @@ namespace SNDotNetSDK.Models
     {
         [JsonProperty("checked")]
         public int Check { get; set; }
-
+        [JsonProperty("value")]
         public string Value { get; set; }
     }
 }

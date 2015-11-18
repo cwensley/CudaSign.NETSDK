@@ -1,4 +1,5 @@
-﻿
+﻿using Newtonsoft.Json;
+
 namespace SNDotNetSDK.Models
 {
     /**
@@ -8,12 +9,13 @@ namespace SNDotNetSDK.Models
      */
     public class Text : Field
     {
+        [JsonProperty("size")]
         public int Size { get; set; }
-
+        [JsonProperty("font")]
         public string Font { get; set; }
-
+        [JsonProperty("data")]
         public string Data { get; set; }
-
+        [JsonProperty("line_height")]
         public double LineHeight { get; set; }
     }
 }
