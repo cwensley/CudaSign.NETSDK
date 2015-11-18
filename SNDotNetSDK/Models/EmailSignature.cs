@@ -26,8 +26,10 @@ namespace SNDotNetSDK.Models
      */
     public class EmailSignature
     {
-        [JsonProperty("to")]
-        public List<EmailRole> To { get; set; }
+		List<EmailRole> to = new List<EmailRole>();
+
+		[JsonProperty("to")]
+		public List<EmailRole> To { get { return to; } }
         [JsonProperty("from")]
         public string From { get; set; }
         [JsonProperty("cc")]

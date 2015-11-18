@@ -24,7 +24,13 @@ namespace SNDotNetSDK.ServiceImpl
 		public static JToken GetResult(this IRestResponse restResponse)
 		{
 			JToken result = null;
-			if (restResponse.Content != null)
+			if (
+				restResponse.Content != null
+				&& (
+					restResponse.ContentType.StartsWith("text/json")
+					|| restResponse.ContentType.StartsWith("application/json")
+				)
+			)
 			{
 				result = JToken.Parse(restResponse.Content);
 				var jobj = result as JObject;
@@ -40,10 +46,10 @@ namespace SNDotNetSDK.ServiceImpl
 							throw new CudaSignException(errors.FirstOrDefault() ?? new ErrorInfo { Message = "Unknown error" });
 					}
 				}
-				if (restResponse.StatusCode != HttpStatusCode.OK)
-				{
-					throw new CudaSignException(new ErrorInfo { Code = (int)restResponse.StatusCode, Message = restResponse.StatusDescription });
-				}
+			}
+			if (restResponse.StatusCode != HttpStatusCode.OK)
+			{
+				throw new CudaSignException(new ErrorInfo { Code = (int)restResponse.StatusCode, Message = restResponse.StatusDescription });
 			}
 			return result;
 		}
