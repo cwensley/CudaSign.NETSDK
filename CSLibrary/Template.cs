@@ -15,20 +15,21 @@ namespace CudaSign
 {
     public class Template
     {
+		CudaSignClient client;
+		internal Template(CudaSignClient client)
+		{
+			this.client = client;
+		}
 
-        /// <summary>
-        /// Create a Template by Flattening an Existing Document
-        /// </summary>
-        /// <param name="AccessToken"></param>
-        /// <param name="DocumentId">The ID of the Document to make a Template</param>
-        /// <param name="DocumentName">New Template Name</param>
-        /// <param name="ResultFormat">JSON, XML</param>
-        /// <returns>The ID of the new Template</returns>
-        public static dynamic Create(string AccessToken, string DocumentId, string DocumentName = "", string ResultFormat = "JSON")
+		/// <summary>
+		/// Create a Template by Flattening an Existing Document
+		/// </summary>
+		/// <param name="AccessToken"></param>
+		/// <param name="DocumentId">The ID of the Document to make a Template</param>
+		/// <param name="DocumentName">New Template Name</param>
+		/// <returns>The ID of the new Template</returns>
+		public dynamic Create(string AccessToken, string DocumentId, string DocumentName = "", string ResultFormat = "JSON")
         {
-            var client = new RestClient();
-            client.BaseUrl = new Uri(Config.ApiHost);
-
             var request = new RestRequest("/template", Method.POST)
                 .AddHeader("Accept", "application/json")
                 .AddHeader("Authorization", "Bearer " + AccessToken);
@@ -81,10 +82,8 @@ namespace CudaSign
         /// <param name="DocumentName"></param>
         /// <param name="ResultFormat">JSON, XML</param>
         /// <returns>New Document ID and Name</returns>
-        public static dynamic Copy(string AccessToken, string DocumentId, string DocumentName = "", string ResultFormat = "JSON")
+        public dynamic Copy(string AccessToken, string DocumentId, string DocumentName = "", string ResultFormat = "JSON")
         {
-            var client = new RestClient();
-            client.BaseUrl = new Uri(Config.ApiHost);
 
             var request = new RestRequest("/template/" + DocumentId + "/copy", Method.POST)
                 .AddHeader("Accept", "application/json")

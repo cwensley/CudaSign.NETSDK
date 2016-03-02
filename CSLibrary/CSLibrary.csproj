@@ -47,7 +47,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CudaSign.cs" />
+    <Compile Include="CudaSignException.cs" />
+    <Compile Include="Helpers\JsonHelpers.cs" />
     <Compile Include="Link.cs" />
+    <Compile Include="ResultModels.cs" />
+    <Compile Include="Helpers\RequestHelpers.cs" />
     <Compile Include="Webhook.cs" />
     <Compile Include="Folder.cs" />
     <Compile Include="Template.cs" />

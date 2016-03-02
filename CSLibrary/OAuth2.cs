@@ -11,97 +11,59 @@ using System.Xml;
 
 namespace CudaSign
 {
+	public class OAuth2Token
+	{
+		public string AccessToken { get; set; }
+		public string TokenType { get; set; }
+		//public TimeSpan ExpiresIn { get; set; }
+		public string RefreshToken { get; set; }
+		public string Id { get; set; }
+		public string Scope { get; set; }
+	}
+
     public class OAuth2
     {
-        /// <summary>
-        /// Request an Access Token using the User's Credentials
-        /// </summary>
-        /// <param name="Email"></param>
-        /// <param name="Password"></param>
-        /// <param name="Scope">A space delimited list of API URIs e.g. "user%20documents%20user%2Fdocumentsv2"</param>
-        /// <param name="ResultFormat">JSON, XML</param>
-        /// <returns>New Access Token, Token Type, Expires In, Refresh Token, ID, Scope</returns>
-        public static dynamic RequestToken(string Email, string Password, string Scope = "*", string ResultFormat = "JSON")
+		CudaSignClient client;
+
+		internal OAuth2(CudaSignClient client)
+		{
+			this.client = client;
+		}
+
+		/// <summary>
+		/// Request an Access Token using the User's Credentials
+		/// </summary>
+		/// <param name="email"></param>
+		/// <param name="password"></param>
+		/// <param name="scope">A space delimited list of API URIs e.g. "user%20documents%20user%2Fdocumentsv2"</param>
+		/// <returns>New Access Token, Token Type, Expires In, Refresh Token, ID, Scope</returns>
+		public OAuth2Token RequestToken(string email, string password, string scope = "*")
         {
-            var client = new RestClient();
-            client.BaseUrl = new Uri(Config.ApiHost);
-
-            var request = new RestRequest("/oauth2/token", Method.POST)
-                .AddHeader("Accept", "application/json")
-                .AddHeader("Authorization", "Basic " + Config.EncodedClientCredentials)
-                .AddHeader("Content-Type", "application/x-www-form-urlencoded")
-                .AddParameter("username", Email)
-                .AddParameter("password", Password)
+			var request = client.CreateRequest(null, "/oauth2/token", Method.POST)
+				.AddHeader("Authorization", "Basic " + client.EncodedClientCredentials)
+				.AddHeader("Content-Type", "application/x-www-form-urlencoded")
+                .AddParameter("username", email)
+                .AddParameter("password", password)
                 .AddParameter("grant_type", "password")
-                .AddParameter("scope", Scope);
+                .AddParameter("scope", scope);
 
-                request.RequestFormat = DataFormat.Json;
-
-            var response = client.Execute(request);
-
-            dynamic results = "";
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                results = response.Content;
-            }
-            else
-            {
-                Console.WriteLine(response.Content.ToString());
-                results = response.Content.ToString();
-            }
-
-            if (ResultFormat == "JSON")
-            {
-                results = JsonConvert.DeserializeObject(results);
-            }
-            else if (ResultFormat == "XML")
-            {
-                results = (XmlDocument)JsonConvert.DeserializeXmlNode(results, "root");
-            }
-
-            return results;
+			var response = client.Execute(request);
+			return response.GetResult<OAuth2Token>();
         }
 
         /// <summary>
         /// Verify a User's Access Token
         /// </summary>
-        /// <param name="AccessToken">User's Access Token</param>
+        /// <param name="accessToken">User's Access Token</param>
         /// <param name="ResultFormat">JSON, XML</param>
         /// <returns>Access Token, Token Type, Expires In, Refresh Token, Scope</returns>
-        public static dynamic Verify(string AccessToken, string ResultFormat = "JSON")
+        public OAuth2Token Verify(OAuth2Token accessToken)
         {
-            var client = new RestClient();
-            client.BaseUrl = new Uri(Config.ApiHost);
-
-            var request = new RestRequest("/oauth2/token", Method.GET)
-                .AddHeader("Accept", "application/json")
-                .AddHeader("Authorization", "Bearer " + AccessToken);
+			var request = client.CreateRequest(accessToken, "/oauth2/token", Method.POST);
 
             var response = client.Execute(request);
 
-            dynamic results = "";
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                results = response.Content;
-            }
-            else
-            {
-                Console.WriteLine(response.Content.ToString());
-                results = response.Content.ToString();
-            }
-
-            if (ResultFormat == "JSON")
-            {
-                results = JsonConvert.DeserializeObject(results);
-            }
-            else if (ResultFormat == "XML")
-            {
-                results = (XmlDocument)JsonConvert.DeserializeXmlNode(results, "root");
-            }
-
-            return results;
+			return response.GetResult<OAuth2Token>();
         }
     }
 }

@@ -16,17 +16,20 @@ namespace CudaSign
 {
     public class Webhook
     {
+		CudaSignClient client;
+		internal Webhook(CudaSignClient client)
+		{
+			this.client = client;
+		}
+
         /// <summary>
         /// Get a List of Current Webhook Subscriptions
         /// </summary>
         /// <param name="AccessToken"></param>
         /// <param name="ResultFormat">JSON, XML</param>
         /// <returns>List of Subscriptions</returns>
-        public static dynamic List(string AccessToken, string ResultFormat = "JSON")
+        public dynamic List(string AccessToken, string ResultFormat = "JSON")
         {
-            var client = new RestClient();
-            client.BaseUrl = new Uri(Config.ApiHost);
-
             var request = new RestRequest("/event_subscription", Method.GET)
                 .AddHeader("Accept", "application/json")
                 .AddHeader("Authorization", "Bearer " + AccessToken);
@@ -65,11 +68,8 @@ namespace CudaSign
         /// <param name="CallbackUrl">The URL called when the even is triggered.</param>
         /// <param name="ResultFormat">JSON, XML</param>
         /// <returns>ID, Created, Updated</returns>
-        public static dynamic Create(string AccessToken, string EventType, string CallbackUrl, string ResultFormat = "JSON")
+        public dynamic Create(string AccessToken, string EventType, string CallbackUrl, string ResultFormat = "JSON")
         {
-            var client = new RestClient();
-            client.BaseUrl = new Uri(Config.ApiHost);
-
             var request = new RestRequest("/event_subscription", Method.POST)
                 .AddHeader("Accept", "application/json")
                 .AddHeader("Authorization", "Bearer " + AccessToken);
@@ -115,11 +115,8 @@ namespace CudaSign
         /// <param name="SubscriptionId"></param>
         /// <param name="ResultFormat">JSON, XML</param>
         /// <returns>{"status":"success"}</returns>
-        public static dynamic Delete(string AccessToken, string SubscriptionId, string ResultFormat = "JSON")
+        public dynamic Delete(string AccessToken, string SubscriptionId, string ResultFormat = "JSON")
         {
-            var client = new RestClient();
-            client.BaseUrl = new Uri(Config.ApiHost);
-
             var request = new RestRequest("/event_subscription/" + SubscriptionId, Method.DELETE)
                 .AddHeader("Accept", "application/json")
                 .AddHeader("Authorization", "Bearer " + AccessToken);

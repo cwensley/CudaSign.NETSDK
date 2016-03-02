@@ -13,92 +13,126 @@ using System.Xml;
 
 namespace CudaSign
 {
-    public class Folder
-    {
-        /// <summary>
-        /// Gets a List of Folders
-        /// </summary>
-        /// <param name="AccessToken"></param>
-        /// <param name="ResultFormat">JSON, XML</param>
-        /// <returns>Folders, Document & Template Counts</returns>
-        public static dynamic List(string AccessToken, string ResultFormat = "JSON")
-        {
-            var client = new RestClient();
-            client.BaseUrl = new Uri(Config.ApiHost);
+	public enum SigningStatus
+	{
+		WaitingForMe,
+		WaitinfForOthers,
+		Signed,
+		Pending
+	}
 
-            var request = new RestRequest("/folder", Method.GET)
-                .AddHeader("Accept", "application/json")
-                .AddHeader("Authorization", "Bearer " + AccessToken);
+	public enum FolderSort
+	{
+		DocumentName,
+		Updated,
+		Created
+	}
+
+	public enum SortOrder
+	{
+		Ascending,
+		Descending
+	}
+
+	public abstract class FolderFilter
+	{
+
+	}
+
+	public class SigningStatusFolderFilter : FolderFilter
+	{
+		public SigningStatus Status { get; }
+
+		public SigningStatusFolderFilter(SigningStatus status)
+		{
+			Status = status;
+		}
+
+		public override string ToString()
+		{
+			return "filter=signing-status&filter-value=" + NameHelpers.Dash(Status.ToString());
+		}
+	}
+
+	public class DocumentUpdatedFolderFilter : FolderFilter
+	{
+		public DateTime Updated { get; }
+
+		public DocumentUpdatedFolderFilter(DateTime updated)
+		{
+			Updated = updated;
+		}
+
+		public override string ToString()
+		{
+			return "filter=document-updated&filter-value=" + Updated.ToString();
+		}
+	}
+
+	public class DocumentCreatedFolderFilter : FolderFilter
+	{
+		public DateTime Created { get; }
+
+		public DocumentCreatedFolderFilter(DateTime created)
+		{
+			Created = created;
+		}
+
+		public override string ToString()
+		{
+			return "filter=document-created&filter-value=" + Created.ToString();
+		}
+	}
+
+	public class Folder
+    {
+		CudaSignClient client;
+		internal Folder(CudaSignClient client)
+		{
+			this.client = client;
+		}
+
+		/// <summary>
+		/// Gets a List of Folders
+		/// </summary>
+		/// <param name="token"></param>
+		/// <returns>Folders, Document & Template Counts</returns>
+		public FolderList List(OAuth2Token token)
+        {
+			var request = client.CreateRequest(token, "/folder", Method.GET);
 
             var response = client.Execute(request);
 
-            dynamic results = "";
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                results = response.Content;
-            }
-            else
-            {
-                Console.WriteLine(response.Content.ToString());
-                results = response.Content.ToString();
-            }
-
-            if (ResultFormat == "JSON")
-            {
-                results = JsonConvert.DeserializeObject(results);
-            }
-            else if (ResultFormat == "XML")
-            {
-                results = (XmlDocument)JsonConvert.DeserializeXmlNode(results, "root");
-            }
-
-            return results;
+			return response.GetResult<FolderList>();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="AccessToken"></param>
-        /// <param name="FolderId">ID of the Folder to Get</param>
-        /// <param name="Params">Option Filter and Sort By Params</param>
-        /// <param name="ResultFormat">JSON, XML</param>
-        /// <returns>List of documents in the folder.</returns>
-        public static dynamic Get(string AccessToken, string FolderId, string Params = "", string ResultFormat = "JSON")
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="token"></param>
+		/// <param name="folderId">ID of the Folder to Get</param>
+		/// <param name="params">Option Filter and Sort By Params</param>
+		/// <returns>List of documents in the folder.</returns>
+		public FolderDetails Get(OAuth2Token token, string folderId, FolderFilter filter = null, FolderSort? sortBy = null, SortOrder order = SortOrder.Ascending)
         {
-            var client = new RestClient();
-            client.BaseUrl = new Uri(Config.ApiHost);
+			var sb = new StringBuilder();
+			if (filter != null)
+				sb.Append(filter.ToString());
+			if (sortBy != null)
+			{
+				if (sb.Length > 0) sb.Append("&");
+				sb.Append(NameHelpers.Dash(sortBy.Value.ToString()));
+				sb.Append("&order=");
+				sb.Append(order == SortOrder.Ascending ? "asc" : "desc");
+			}
+			if (sb.Length > 0)
+				sb.Insert(0, "?");
 
-            string qsParams = (Params != "") ? "?" + Params : "";
-
-            var request = new RestRequest("/folder/" + FolderId + qsParams, Method.GET)
-                .AddHeader("Accept", "application/json")
-                .AddHeader("Authorization", "Bearer " + AccessToken);
+			var request = client.CreateRequest(token, "/folder/" + folderId + sb.ToString(), Method.GET);
 
             var response = client.Execute(request);
 
-            dynamic results = "";
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                results = response.Content;
-            }
-            else
-            {
-                Console.WriteLine(response.Content.ToString());
-                results = response.Content.ToString();
-            }
-
-            if (ResultFormat == "JSON")
-            {
-                results = JsonConvert.DeserializeObject(results);
-            }
-            else if (ResultFormat == "XML")
-            {
-                results = (XmlDocument)JsonConvert.DeserializeXmlNode(results, "root");
-            }
-
-            return results;
+			return response.GetResult<FolderDetails>();
         }
     }
 }

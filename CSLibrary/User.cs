@@ -11,102 +11,91 @@ using System.Xml;
 
 namespace CudaSign
 {
+	public class UserInfo
+	{
+		public string Email { get; set; }
+		public string Password { get; set; }
+		public string FirstName { get; set; }
+		public string LastName { get; set; }
+	}
+
+	public class IdentityInfo
+	{
+		public string Identified { get; set; }
+		public string Status { get; set; }
+		public bool OkToRetry { get; set; }
+	}
+
+	public class UserDetails : UserInfo
+	{
+		public string Id { get; set; }
+		public int Active { get; set; }
+		public int Type { get; set; }
+		public int Pro { get; set; }
+		public DateTime Created { get; set; }
+		public string[] Emails { get; set; }
+		public IdentityInfo Identity { get; set; }
+		public int Credits { get; set; }
+		public bool HasAtticusAccess { get; set; }
+		public bool IsLoggedIn { get; set; }
+		//public TeamInfo[] Teams { get; set; } ?? what is the return type here, or is it strings?  the api docs don't give an example.
+	}
+
+	public class CreateUserResult
+	{
+		public string Id { get; set; }
+		public int Verified { get; set; }
+		public string Email { get; set; }
+	}
+
     public class User
     {
-        /// <summary>
-        /// Creates a New User CudaSign Account
-        /// </summary>
-        /// <param name="Email">New User's Email Address</param>
-        /// <param name="Password">New User's Password</param>
-        /// <param name="FirstName">New User's First Name</param>
-        /// <param name="LastName">New User's Last Name</param>
-        /// <param name="ResultFormat">JSON, XML</param>
-        /// <returns>The ID of the new user account and verification status.</returns>
-        public static dynamic Create(string Email, string Password, string FirstName = "", string LastName = "", string ClientId = "", string ClientSecret = "", string ResultFormat = "JSON")
+		CudaSignClient client;
+		internal User(CudaSignClient client)
+		{
+			this.client = client;
+		}
+
+		/// <summary>
+		/// Creates a New User CudaSign Account
+		/// </summary>
+		/// <param name="user">User Information</param>
+		/// <param name="Password">New User's Password</param>
+		/// <param name="FirstName">New User's First Name</param>
+		/// <param name="LastName">New User's Last Name</param>
+		/// <returns>The ID of the new user account and verification status.</returns>
+		public CreateUserResult Create(UserInfo user, string clientId = null, string clientSecret = null)
         {
-            var client = new RestClient();
-            client.BaseUrl = new Uri(Config.ApiHost);
+            var clientCredentials = client.EncodedClientCredentials;
 
-            var clientCredentials = Config.EncodedClientCredentials;
-
-            if (ClientId != "" && ClientSecret != "")
+            if (!string.IsNullOrEmpty(clientId) && !string.IsNullOrEmpty(clientSecret))
             {
-                clientCredentials = Config.encodeClientCredentials(ClientId, ClientSecret);
+                clientCredentials = client.EncodeClientCredentials(clientId, clientSecret);
             }
 
             var request = new RestRequest("/user", Method.POST)
                 .AddHeader("Accept", "application/json")
-                .AddHeader("Authorization", "Basic " + Config.EncodedClientCredentials);
+                .AddHeader("Authorization", "Basic " + client.EncodedClientCredentials);
 
-                request.RequestFormat = DataFormat.Json;
-                request.AddBody(new { email = Email, password = Password, first_name = FirstName, last_name = LastName });
+			request.AddJsonNetBody(user);
 
             var response = client.Execute(request);
 
-            dynamic results = "";
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                results = response.Content;
-            }
-            else
-            {
-                Console.WriteLine(response.Content.ToString());
-                results = response.Content.ToString();
-            }
-
-            if (ResultFormat == "JSON")
-            {
-                results = JsonConvert.DeserializeObject(results);
-            }
-            else if (ResultFormat == "XML")
-            {
-                results = (XmlDocument)JsonConvert.DeserializeXmlNode(results, "root");
-            }
-
-            return results;
+			return response.GetResult<CreateUserResult>();
         }
 
-        /// <summary>
-        /// Retrieves a User Account
-        /// </summary>
-        /// <param name="AccessToken">User's Access Token</param>
-        /// <param name="ResultFormat">JSON, XML</param>
-        /// <param name="ResultFormat">JSON, XML</param>
-        /// <returns>User Account Information</returns>
-        public static dynamic Get(string AccessToken,  string ResultFormat = "JSON")
+		/// <summary>
+		/// Retrieves a User Account
+		/// </summary>
+		/// <param name="accessToken">User's Access Token</param>
+		/// <returns>User Account Information</returns>
+		public UserDetails Get(OAuth2Token accessToken)
         {
-            var client = new RestClient();
-            client.BaseUrl = new Uri(Config.ApiHost);
-
-            var request = new RestRequest("/user", Method.GET)
-                .AddHeader("Accept", "application/json")
-                .AddHeader("Authorization", "Bearer " + AccessToken);
+			var request = client.CreateRequest(accessToken, "/user", Method.GET);
 
             var response = client.Execute(request);
 
-            dynamic results = "";
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                results = response.Content;
-            }
-            else
-            {
-                Console.WriteLine(response.Content.ToString());
-                results = response.Content.ToString();
-            }
-
-            if (ResultFormat == "JSON")
-            {
-                results = JsonConvert.DeserializeObject(results);
-            }
-            else if (ResultFormat == "XML")
-            {
-                results = (XmlDocument)JsonConvert.DeserializeXmlNode(results, "root");
-            }
-
-            return results;
+			return response.GetResult<UserDetails>();
         }
     }
 }
