@@ -13,77 +13,6 @@ using System.Xml;
 
 namespace CudaSign
 {
-	public enum SigningStatus
-	{
-		WaitingForMe,
-		WaitinfForOthers,
-		Signed,
-		Pending
-	}
-
-	public enum FolderSort
-	{
-		DocumentName,
-		Updated,
-		Created
-	}
-
-	public enum SortOrder
-	{
-		Ascending,
-		Descending
-	}
-
-	public abstract class FolderFilter
-	{
-
-	}
-
-	public class SigningStatusFolderFilter : FolderFilter
-	{
-		public SigningStatus Status { get; }
-
-		public SigningStatusFolderFilter(SigningStatus status)
-		{
-			Status = status;
-		}
-
-		public override string ToString()
-		{
-			return "filter=signing-status&filter-value=" + NameHelpers.Dash(Status.ToString());
-		}
-	}
-
-	public class DocumentUpdatedFolderFilter : FolderFilter
-	{
-		public DateTime Updated { get; }
-
-		public DocumentUpdatedFolderFilter(DateTime updated)
-		{
-			Updated = updated;
-		}
-
-		public override string ToString()
-		{
-			return "filter=document-updated&filter-value=" + Updated.ToString();
-		}
-	}
-
-	public class DocumentCreatedFolderFilter : FolderFilter
-	{
-		public DateTime Created { get; }
-
-		public DocumentCreatedFolderFilter(DateTime created)
-		{
-			Created = created;
-		}
-
-		public override string ToString()
-		{
-			return "filter=document-created&filter-value=" + Created.ToString();
-		}
-	}
-
 	public class Folder
     {
 		CudaSignClient client;
@@ -113,7 +42,7 @@ namespace CudaSign
 		/// <param name="folderId">ID of the Folder to Get</param>
 		/// <param name="params">Option Filter and Sort By Params</param>
 		/// <returns>List of documents in the folder.</returns>
-		public FolderDetails Get(OAuth2Token token, string folderId, FolderFilter filter = null, FolderSort? sortBy = null, SortOrder order = SortOrder.Ascending)
+		public FolderDetail Get(OAuth2Token token, string folderId, FolderFilter filter = null, FolderSort? sortBy = null, SortOrder order = SortOrder.Ascending)
         {
 			var sb = new StringBuilder();
 			if (filter != null)
@@ -132,7 +61,7 @@ namespace CudaSign
 
             var response = client.Execute(request);
 
-			return response.GetResult<FolderDetails>();
+			return response.GetResult<FolderDetail>();
         }
     }
 }

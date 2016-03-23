@@ -13,13 +13,6 @@ using System.Xml;
 
 namespace CudaSign
 {
-	public class LinkInfo
-	{
-		public string Url { get; set; }
-
-		public string UrlNoSignup { get; set; }
-	}
-
     public class Link
     {
 		CudaSignClient client;

@@ -13,63 +13,6 @@ using System.Xml;
 
 namespace CudaSign
 {
-	public abstract class InviteBase
-	{
-	}
-
-	public class FreeFormInvite : InviteBase
-	{
-		public string From { get; }
-		public string To { get; }
-
-		public FreeFormInvite(string from, string to)
-		{
-			From = from;
-			To = to;
-		}
-	}
-
-	public class Signer
-	{
-		public string Email { get; }
-		public string Role { get; }
-		public int Order { get; }
-		public string RoleId { get; }
-		public string AuthenticationType { get; set; }
-		public string Password { get; set; }
-		public int? ExpirationDays { get; set; }
-		public int? Reminder { get; set; }
-
-		public Signer(string email, string role, int order = 1)
-		{
-			Email = email;
-			Role = role;
-			Order = order;
-			RoleId = string.Empty;
-			//AuthenticationType = "password";
-		}
-	}
-
-	public class RoleBasedInvite : InviteBase
-	{
-		public Signer[] To { get; }
-		public string From { get; }
-
-		public RoleBasedInvite(string from, params Signer[] to)
-		{
-			if (to == null || to.Length == 0)
-				throw new ArgumentOutOfRangeException("to", "You must specify at least one signer");
-			From = from;
-			To = to;
-		}
-
-		public string[] Cc { get; set; }
-
-		public string Subject { get; set; }
-
-		public string Message { get; set; }
-	}
-
 	public class Document
     {
 		CudaSignClient client;
@@ -85,6 +28,7 @@ namespace CudaSign
 		/// <param name="accessToken"></param>
 		/// <param name="fileName">Local Path to the File, or name of file if <paramref name="bytes"/> is specified</param>
 		/// <param name="extractFields">If set TRUE the document will be checked for special field tags. If any exist they will be converted to fields.</param>
+		/// <param name="bytes">The bytes of the file, or null if <paramref name="fileName"/> refers to a file on disk</param>
 		/// <returns>ID of the document that was created</returns>
 		public string Create(OAuth2Token accessToken, string fileName, bool extractFields = false, byte[] bytes = null)
 		{
@@ -107,21 +51,17 @@ namespace CudaSign
 		/// <summary>
 		/// Updates an Existing Document
 		/// </summary>
-		/// <param name="AccessToken"></param>
-		/// <param name="DocumentID">Document Id</param>
-		/// <param name="DataObj">Data Object (ex. dynamic new { fields = new[] { new { x = 10, y = 10, width = 122... } } }</param>
+		/// <param name="accessToken"></param>
+		/// <param name="documentID">Document Id to update</param>
+		/// <param name="data">Data for the updated fields</param>
 		/// <returns>Document ID</returns>
-		public string Update(string AccessToken, string DocumentId, dynamic DataObj, string ResultFormat = "JSON")
+		public string Update(OAuth2Token accessToken, string documentId, UpdateRequest data)
         {
-            var request = new RestRequest("/document/" + DocumentId, Method.PUT)
-                .AddHeader("Accept", "application/json")
-                .AddHeader("Authorization", "Bearer " + AccessToken);
+			var request = client.CreateRequest(accessToken, "/document/" + documentId, Method.PUT);
 
-            request.RequestFormat = DataFormat.Json;
-            request.AddBody(DataObj);
+            request.AddJsonNetBody(data);
 
             var response = client.Execute(request);
-
 
 			var result = response.GetResult();
             return result["id"].Value<string>();
@@ -147,7 +87,7 @@ namespace CudaSign
         /// </summary>
         /// <param name="accessToken"></param>
         /// <param name="documentId">Document Id</param>
-        /// <returns>{"status":"success"}</returns>
+        /// <returns><c>true</c> if successful, <c>false</c> otherwise</returns>
         public bool Delete(OAuth2Token accessToken, string documentId)
         {
 			var request = client.CreateRequest(accessToken, "/document/" + documentId, Method.DELETE);
@@ -165,7 +105,7 @@ namespace CudaSign
 		/// <param name="documentId">Document Id</param>
 		/// <param name="SaveFilePath">Local Path to Save File</param>
 		/// <param name="SaveFileName">File Name without Extension</param>
-		/// <returns>Collapsed document in PDF format saved to a the location provided.</returns>
+		/// <returns>Collapsed document data in PDF format.</returns>
 		public byte[] Download(OAuth2Token accessToken, string documentId)
         {
 			var request = client.CreateRequest(accessToken, "/document/" + documentId + "/download?type=collapsed", Method.GET);
@@ -183,14 +123,14 @@ namespace CudaSign
             }
         }
 
-        /// <summary>
-        /// Send a Role-based or Free Form Document Invite
-        /// </summary>
-        /// <param name="accessToken"></param>
-        /// <param name="documentId"></param>
-        /// <param name="dataObj">Data Object (ex. dynamic new { to = new[] { new { email = "name@domain.com", role_id = ... } } }</param>
-        /// <returns>{"result":"success"}</returns>
-        public bool Invite(OAuth2Token accessToken, string documentId, InviteBase inviteData, bool disableEmail = false)
+		/// <summary>
+		/// Send a Role-based or Free Form Document Invite
+		/// </summary>
+		/// <param name="accessToken"></param>
+		/// <param name="documentId"></param>
+		/// <param name="inviteData">Details for the invite data, either a <see cref="FreeFormInvite"/> or <see cref="RoleBasedInvite"/> object.</param>
+		/// <returns><c>true</c> if successful, <c>false</c> otherwise</returns>
+		public bool Invite(OAuth2Token accessToken, string documentId, InviteRequest inviteData, bool disableEmail = false)
         {
 			var disableEmailParam = (disableEmail) ? "?email=disable" : "";
 
@@ -224,88 +164,37 @@ namespace CudaSign
         /// <summary>
         /// Create a One-time Use Download URL
         /// </summary>
-        /// <param name="AccessToken"></param>
-        /// <param name="DocumentId"></param>
-        /// <param name="ResultFormat">JSON, XML</param>
+        /// <param name="accessToken"></param>
+        /// <param name="documentId"></param>
         /// <returns>URL to download the document as a PDF</returns>
-        public dynamic Share(string AccessToken, string DocumentId, string ResultFormat = "JSON")
+        public string Share(OAuth2Token accessToken, string documentId)
         {
-            var request = new RestRequest("/document/" + DocumentId + "/download/link", Method.POST)
-                .AddHeader("Accept", "application/json")
-                .AddHeader("Authorization", "Bearer " + AccessToken);
+			var request = client.CreateRequest(accessToken, "/document/" + documentId + "/download/link", Method.POST);
 
             var response = client.Execute(request);
 
-            dynamic results = "";
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                results = response.Content;
-            }
-            else
-            {
-                Console.WriteLine(response.Content.ToString());
-                results = response.Content.ToString();
-            }
-
-            if (ResultFormat == "JSON")
-            {
-                results = JsonConvert.DeserializeObject(results);
-            }
-            else if (ResultFormat == "XML")
-            {
-                results = (XmlDocument)JsonConvert.DeserializeXmlNode(results, "root");
-            }
-
-            return results;
+			return response.GetResult()["link"].Value<string>();
         }
 
-        /// <summary>
-        /// Merges Existing Documents
-        /// </summary>
-        /// <param name="AccessToken"></param>
-        /// <param name="DataObj">Data Object (ex. dynamic new { to = new[] { new { name = "My New Merged Doc", document_ids = ... } } }</param>
-        /// <param name="ResultFormat">JSON, XML</param>
-        /// <returns>Location the PDF file was saved to.</returns>
-        public dynamic Merge(string AccessToken, dynamic DataObj, string SaveFilePath = "", string SaveFileName = "my-merged-document", string ResultFormat = "JSON")
+		/// <summary>
+		/// Merges Existing Documents
+		/// </summary>
+		/// <param name="accessToken"></param>
+		/// <param name="name">The name of the newly merged document</param>
+		/// <param name="documentIds">An array of document IDs to merge</param>
+		/// <returns>The merged document data in PDF.</returns>
+		public byte[] Merge(OAuth2Token accessToken, string name, params string[] documentIds)
         {
-            var request = new RestRequest("/document/merge", Method.POST)
-                .AddHeader("Accept", "application/json")
-                .AddHeader("Authorization", "Bearer " + AccessToken);
+			var request = client.CreateRequest(accessToken, "/document/merge", Method.POST);
 
             request.RequestFormat = DataFormat.Json;
-            request.AddBody(DataObj);
+            request.AddBody(new { name = name, document_ids = documentIds });
 
             var response = client.Execute(request);
 
-            dynamic results = "";
+			response.GetResult(); // ensure there's no errors
 
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var path = (SaveFilePath != "") ? Path.GetDirectoryName(SaveFilePath) + "\\" + SaveFileName + ".pdf" : Directory.GetCurrentDirectory() + "\\" + SaveFileName + ".pdf";
-                client.DownloadData(request).SaveAs(path);
-
-                dynamic jsonObject = new JObject();
-                jsonObject.file = path;
-
-                results = JsonConvert.SerializeObject(jsonObject);
-            }
-            else
-            {
-                Console.WriteLine(response.Content.ToString());
-                results = response.Content.ToString();
-            }
-
-            if (ResultFormat == "JSON")
-            {
-                results = JsonConvert.DeserializeObject(results);
-            }
-            else if (ResultFormat == "XML")
-            {
-                results = (XmlDocument)JsonConvert.DeserializeXmlNode(results, "root");
-            }
-
-            return results;
+			return response.RawBytes;
         }
 
         /// <summary>

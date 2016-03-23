@@ -22,7 +22,7 @@ namespace CudaSign
 	public class FieldInfo
 	{
 		public string Id { get; set; }
-		public string Type { get; set; }
+		public string Type { get; set; }  // use enum?  what are the valid types?
 		public string RoleId { get; set; }
 		[JsonProperty("json_attributes")]
 		public FieldAttributes Attributes { get; set; }
@@ -56,13 +56,13 @@ namespace CudaSign
 
 	public class FolderList : FolderInfo
 	{
-		public List<FolderInfo> Folders { get; set; }
+		public List<FolderInfo> Folders { get; } = new List<FolderInfo>();
 	}
 
-	public class InviteInfo
+	public class FieldInviteInfo
 	{
 		public string Id { get; set; }
-		public string Status { get; set; }
+		public string Status { get; set; } // use enum?  what are the valid statuses?
 		public DateTime Updated { get; set; }
 		public string Email { get; set; }
 		public string Role { get; set; }
@@ -96,16 +96,22 @@ namespace CudaSign
 		public int PageCount { get; set; }
 		public bool Template { get; set; }
 		public string ParentId { get; set; }
-		public List<FieldInfo> Fields { get; set; }
-		public List<RoleInfo> Roles { get; set; }
-		[JsonProperty("field_invites")]
-		public List<InviteInfo> Invites { get; set; }
-		public List<SignatureInfo> Signatures { get; set; }
+		public List<FieldInfo> Fields { get; } = new List<FieldInfo>();
+		public List<RoleInfo> Roles { get; } = new List<RoleInfo>();
+		public List<FieldInviteInfo> FieldInvites { get; } = new List<FieldInviteInfo>();
+		public List<SignatureInfo> Signatures { get; } = new List<SignatureInfo>();
 	}
 
-	public class FolderDetails : FolderList
+	public class FolderDetail : FolderList
 	{
 		public int TotalDocuments { get; set; }
-		public List<DocumentInfo> Documents { get; set; }
+		public List<DocumentInfo> Documents { get; } = new List<DocumentInfo>();
+	}
+
+	public class LinkInfo
+	{
+		public string Url { get; set; }
+
+		public string UrlNoSignup { get; set; }
 	}
 }

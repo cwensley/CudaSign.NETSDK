@@ -30,7 +30,7 @@ using CudaSign;
 using Newtonsoft.Json.Linq;
 using System.IO;
 
-CudaSign.Config.init("YOUR CLIENT ID", "YOUR CLIENT SECRET", [true/false]);
+var cudaSign = new CudaSignClient("YOUR CLIENT ID", "YOUR CLIENT SECRET", [true/false]);
 ```
 
 Examples
@@ -42,41 +42,41 @@ To run the examples you will need an API key. You can get one here [https://sign
 
 ## Request OAuth Token
 ```csharp
-JObject OAuthRes = CudaSign.OAuth2.RequestToken("YOUR USERNAME", "YOUR PASSWORD");
+OAuth2Token token = cudaSign.OAuth2.RequestToken("YOUR USERNAME", "YOUR PASSWORD");
 ```
 
 ## Verify OAuth Token
 ```csharp
-JObject OAuthVRes = CudaSign.OAuth2.Verify(AccessToken);
+OAuth2Token token = cudaSign.OAuth2.Verify(token);
 ```
 
 # User
 
 ## Create New User
 ```csharp
-JObject newAccountRes = CudaSign.User.Create("name@domain.com", "(123) 123-1234", "Firstname", "Lastname");
+CreateUserResult result = cudaSign.User.Create(new UserInfo("name@domain.com", "password") { FirstName = "Firstname", LastName = "Lastname" });
 ```
 
 ## Retreive User Account Information
 ```csharp
-JObject accountRes = CudaSign.User.Get(AccessToken);
+UserDetail user = cudaSign.User.Get(token);
 ```
 
 # Document
 
 ## Get Document
 ```csharp
-JObject docRes = CudaSign.Document.Get(AccessToken, "YOUR DOCUMENT ID");
+DocumentDetail document = cudaSign.Document.Get(token, "YOUR DOCUMENT ID");
 ```
 
 ## Create New Document
 ```csharp
-JObject newDocRes = CudaSign.Document.Create(AccessToken, "pdf-sample.pdf");
+string documentId = cudaSign.Document.Create(token, "pdf-sample.pdf");
 ```
 
 ## Create New Document and Extract the Fields
 ```csharp
-JObject newDocExtRes = CudaSign.Document.Create(AccessToken, "Example Fields.docx", true);
+string documentId = cudaSign.Document.Create(token, "Example Fields.docx", true);
 ```
 
 ## Update Document
@@ -99,17 +99,17 @@ dynamic dataObj = new
   }
 };
 
-JObject updateDocRes = CudaSign.Document.Update(AccessToken, "YOUR DOCUMENT ID", dataObj);
+JObject updateDocRes = CudaSign.Document.Update(token, "YOUR DOCUMENT ID", dataObj);
 ```
 
 ## Delete Document
 ```csharp
-JObject deleteDocRes = CudaSign.Document.Delete(AccessToken, "YOUR DOCUMENT ID");
+bool success = CudaSign.Document.Delete(token, "YOUR DOCUMENT ID");
 ```
 
 ## Download Document
 ```csharp
-JObject downloadDocRes = CudaSign.Document.Download(AccessToken, "YOUR DOCUMENT ID", "/", "sample");
+JObject downloadDocRes = CudaSign.Document.Download(token, "YOUR DOCUMENT ID", "/", "sample");
 ```
 
 ## Send Free Form Invite
@@ -120,7 +120,7 @@ dynamic inviteDataObj = new
   to = "name@domain.com"
 };
 
-JObject sendFreeFormInviteRes = CudaSign.Document.Invite(AccessToken, "YOUR DOCUMENT ID", inviteDataObj);
+JObject sendFreeFormInviteRes = CudaSign.Document.Invite(token, "YOUR DOCUMENT ID", inviteDataObj);
 ```
 
 ## Send Role-based Invite
@@ -156,7 +156,7 @@ dynamic inviteDataObj = new {
   message = "YOUR MESSAGE"
 };
 
-JObject sendRoleBasedInviteRes = CudaSign.Document.Invite(AccessToken, DocumentId, inviteDataObj);
+JObject sendRoleBasedInviteRes = CudaSign.Document.Invite(token, documentId, inviteDataObj);
 ```
 
 ## Cancel Invite

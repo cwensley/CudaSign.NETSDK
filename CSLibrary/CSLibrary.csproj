@@ -50,6 +50,7 @@
     <Compile Include="CudaSignException.cs" />
     <Compile Include="Helpers\JsonHelpers.cs" />
     <Compile Include="Link.cs" />
+    <Compile Include="RequestModels.cs" />
     <Compile Include="ResultModels.cs" />
     <Compile Include="Helpers\RequestHelpers.cs" />
     <Compile Include="Webhook.cs" />
@@ -61,6 +62,9 @@
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\README.md">
+      <Link>README.md</Link>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

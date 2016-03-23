@@ -72,10 +72,10 @@ namespace CudaSign
 						}
 					}
 				}
-				if (restResponse.StatusCode != HttpStatusCode.OK)
-				{
-					throw new CudaSignException((int)restResponse.StatusCode, restResponse.StatusDescription);
-				}
+			}
+			if (restResponse.StatusCode != HttpStatusCode.OK)
+			{
+				throw new CudaSignException((int)restResponse.StatusCode, restResponse.StatusDescription);
 			}
 			return result;
 		}
