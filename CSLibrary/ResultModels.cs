@@ -102,6 +102,14 @@ namespace CudaSign
 		public List<SignatureInfo> Signatures { get; } = new List<SignatureInfo>();
 	}
 
+	public class DocumentGroupInfo
+	{
+		public string Id { get; set; }
+		public string GroupName { get; set; }
+		public string InviteId { get; set; }
+		public List<DocumentInfo> Documents { get; } = new List<DocumentInfo>();
+	}
+
 	public class FolderDetail : FolderList
 	{
 		public int TotalDocuments { get; set; }

@@ -15,20 +15,22 @@ namespace CudaSign
 
 		RestClient rest;
 
-        /// <summary>
-        /// CudaSign Initialization
-        /// </summary>
-        /// <param name="client">API Credentials - Client</param>
-        /// <param name="secret">API Credentials - Secret</param>
-        /// <param name="production">For Public API set True for Eval API set False</param>
-        public CudaSignClient(string client, string secret, bool production)
+		/// <summary>
+		/// CudaSign Initialization
+		/// </summary>
+		/// <param name="client">API Credentials - Client</param>
+		/// <param name="secret">API Credentials - Secret</param>
+		/// <param name="production">For Public API set True for Eval API set False</param>
+		/// <param name="apiServer">API Server Path. Defaults to CudaSign EVALUATION if left blank.</param>
+		public CudaSignClient(string client, string secret, string apiServer = null)
         {
-			ApiHost = (production) ? "https://api.cudasign.com/" : "https://api-eval.cudasign.com/";
+			ApiHost = !string.IsNullOrEmpty(apiServer) ? apiServer : "https://api-eval.cudasign.com/";
 
 			EncodedClientCredentials = EncodeClientCredentials(client, secret);
 			rest = new RestClient(ApiHost);
 			Link = new Link(this);
 			Document = new Document(this);
+			DocumentGroup = new DocumentGroup(this);
 			Folder = new Folder(this);
 			Template = new Template(this);
 			User = new User(this);
@@ -45,6 +47,7 @@ namespace CudaSign
 
 		public Link Link { get; }
 		public Document Document { get; }
+		public DocumentGroup DocumentGroup { get; }
 		public Folder Folder { get; }
 		public Template Template { get; }
 		public User User { get; }

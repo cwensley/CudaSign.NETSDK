@@ -72,9 +72,12 @@ namespace CudaSign
         /// </summary>
         /// <param name="accessToken"></param>
         /// <param name="documentId">Document Id</param>
+		/// <param name="withAnnotations">Include annotations in the result</param>
         /// <returns>Document Information, Status, Fields...</returns>
-        public DocumentInfo Get(OAuth2Token accessToken, string documentId)
+        public DocumentInfo Get(OAuth2Token accessToken, string documentId, bool withAnnotations = false)
         {
+			var qsWithAnnotations = (withAnnotations) ? "?with_annotation=true" : "";
+
 			var request = client.CreateRequest(accessToken, "/document/" + documentId, Method.GET);
 
 			var response = client.Execute(request);
