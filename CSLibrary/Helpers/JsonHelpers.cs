@@ -34,7 +34,7 @@ namespace CudaSign
 						new CustomDateTimeConverter(),
 						new StringEnumConverter
 						{
-							CamelCaseText = false
+                            NamingStrategy = new SnakeCaseNamingStrategy()
 						}
 					}
 				};
