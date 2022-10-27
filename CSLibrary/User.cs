@@ -71,7 +71,7 @@ namespace CudaSign
                 .AddHeader("Accept", "application/json")
                 .AddHeader("Authorization", "Basic " + client.EncodedClientCredentials);
 
-			request.AddJsonNetBody(user);
+			request.AddJsonBody(user);
 
             var response = client.Execute(request);
 

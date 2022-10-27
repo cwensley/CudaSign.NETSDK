@@ -59,7 +59,7 @@ namespace CudaSign
         {
 			var request = client.CreateRequest(accessToken, "/document/" + documentId, Method.Put);
 
-            request.AddJsonNetBody(data);
+            request.AddJsonBody(data);
 
             var response = client.Execute(request);
 
@@ -138,7 +138,7 @@ namespace CudaSign
 			var disableEmailParam = (disableEmail) ? "?email=disable" : "";
 
 			var request = client.CreateRequest(accessToken, "/document/" + documentId + "/invite" + disableEmailParam, Method.Post);
-			request.AddJsonNetBody(inviteData);
+			request.AddJsonBody(inviteData);
 
 
             var response = client.Execute(request);

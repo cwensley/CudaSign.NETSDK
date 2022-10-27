@@ -79,12 +79,5 @@ namespace CudaSign
 			}
 			return result;
 		}
-
-		public static RestRequest AddJsonNetBody(this RestRequest request, object data)
-		{
-			var json = JsonConvert.SerializeObject(data, JsonHelpers.Settings);
-			request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
-			return request;
-		}
 	}
 }
