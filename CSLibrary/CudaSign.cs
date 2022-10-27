@@ -54,22 +54,22 @@ namespace CudaSign
 		public Webhook Webhook { get; }
 		public OAuth2 OAuth2 { get; }
 
-		internal IRestResponse Execute(IRestRequest request)
+		internal RestResponse Execute(RestRequest request)
 		{
 			return rest.Execute(request);
 		}
 
-		internal Task<IRestResponse> ExecuteAsync(IRestRequest request)
+		internal Task<RestResponse> ExecuteAsync(RestRequest request)
 		{
-			return rest.ExecuteTaskAsync(request);
+			return rest.ExecuteAsync(request);
 		}
 
-		internal byte[] DownloadData(IRestRequest request)
+		internal byte[] DownloadData(RestRequest request)
 		{
 			return rest.DownloadData(request);
 		}
 
-		internal IRestRequest CreateRequest(OAuth2Token token, string path, Method method, string accept = "application/json")
+		internal RestRequest CreateRequest(OAuth2Token token, string path, Method method, string accept = "application/json")
 		{
 			var request = new RestRequest(path, method);
 			if (token != null)

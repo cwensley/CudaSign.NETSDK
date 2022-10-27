@@ -39,7 +39,7 @@ namespace CudaSign
 		/// <returns>New Access Token, Token Type, Expires In, Refresh Token, ID, Scope</returns>
 		public OAuth2Token RequestToken(string email, string password, string scope = "*")
         {
-			var request = client.CreateRequest(null, "/oauth2/token", Method.POST)
+			var request = client.CreateRequest(null, "/oauth2/token", Method.Post)
 				.AddHeader("Authorization", "Basic " + client.EncodedClientCredentials)
 				.AddHeader("Content-Type", "application/x-www-form-urlencoded")
                 .AddParameter("username", email)
@@ -59,7 +59,7 @@ namespace CudaSign
         /// <returns>Access Token, Token Type, Expires In, Refresh Token, Scope</returns>
         public OAuth2Token Verify(OAuth2Token accessToken)
         {
-			var request = client.CreateRequest(accessToken, "/oauth2/token", Method.POST);
+			var request = client.CreateRequest(accessToken, "/oauth2/token", Method.Post);
 
             var response = client.Execute(request);
 

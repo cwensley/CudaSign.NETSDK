@@ -30,7 +30,7 @@ namespace CudaSign
 		/// <returns>The ID of the new Template</returns>
 		public dynamic Create(string AccessToken, string DocumentId, string DocumentName = "", string ResultFormat = "JSON")
         {
-            var request = new RestRequest("/template", Method.POST)
+            var request = new RestRequest("/template", Method.Post)
                 .AddHeader("Accept", "application/json")
                 .AddHeader("Authorization", "Bearer " + AccessToken);
 
@@ -45,8 +45,7 @@ namespace CudaSign
                 reqObj = new { document_id = DocumentId };
             }
 
-            request.RequestFormat = DataFormat.Json;
-            request.AddBody(reqObj);
+            request.AddJsonBody((object)reqObj);
 
             var response = client.Execute(request);
 
@@ -85,14 +84,13 @@ namespace CudaSign
         public dynamic Copy(string AccessToken, string DocumentId, string DocumentName = "", string ResultFormat = "JSON")
         {
 
-            var request = new RestRequest("/template/" + DocumentId + "/copy", Method.POST)
+            var request = new RestRequest("/template/" + DocumentId + "/copy", Method.Post)
                 .AddHeader("Accept", "application/json")
                 .AddHeader("Authorization", "Bearer " + AccessToken);
 
             if (DocumentName != "")
             {
-                request.RequestFormat = DataFormat.Json;
-                request.AddBody(new { document_name = DocumentName });
+                request.AddJsonBody(new { document_name = DocumentName });
             }            
 
             var response = client.Execute(request);

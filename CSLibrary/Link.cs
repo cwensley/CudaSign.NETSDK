@@ -23,10 +23,9 @@ namespace CudaSign
 
         public LinkInfo Create(OAuth2Token token, string documentId)
         {
-			var request = client.CreateRequest(token, "/link", Method.POST);
+			var request = client.CreateRequest(token, "/link", Method.Post);
 
-            request.RequestFormat = DataFormat.Json;
-            request.AddBody(new { document_id = documentId });
+            request.AddJsonBody(new { document_id = documentId });
 
             var response = client.Execute(request);
 

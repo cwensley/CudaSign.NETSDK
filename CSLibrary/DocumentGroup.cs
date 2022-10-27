@@ -27,7 +27,7 @@ namespace CudaSign
 
 			var url = (GroupId.Length > 0) ? "/documentgroup/" + GroupId : "/user/documentgroups";
 
-			var request = client.CreateRequest(accessToken, url, Method.GET);
+			var request = client.CreateRequest(accessToken, url, Method.Get);
 
 			var response = client.Execute(request);
 
@@ -47,7 +47,7 @@ namespace CudaSign
 			var client = new RestClient();
 			client.BaseUrl = new Uri(Config.ApiHost);
 
-			var request = new RestRequest("/documentgroup", Method.POST)
+			var request = new RestRequest("/documentgroup", Method.Post)
 				.AddHeader("Accept", "application/json")
 				.AddHeader("Authorization", "Bearer " + AccessToken);
 
@@ -92,7 +92,7 @@ namespace CudaSign
 			var client = new RestClient();
 			client.BaseUrl = new Uri(Config.ApiHost);
 
-			var request = new RestRequest("/documentgroup/" + GroupId, Method.DELETE)
+			var request = new RestRequest("/documentgroup/" + GroupId, Method.Delete)
 				.AddHeader("Accept", "application/json")
 				.AddHeader("Authorization", "Bearer " + AccessToken);
 
@@ -135,7 +135,7 @@ namespace CudaSign
 			var client = new RestClient();
 			client.BaseUrl = new Uri(Config.ApiHost);
 
-			var request = new RestRequest("/documentgroup/" + GroupId + "/groupinvite", Method.POST)
+			var request = new RestRequest("/documentgroup/" + GroupId + "/groupinvite", Method.Post)
 				.AddHeader("Accept", "application/json")
 				.AddHeader("Authorization", "Bearer " + AccessToken);
 
@@ -181,7 +181,7 @@ namespace CudaSign
 			var client = new RestClient();
 			client.BaseUrl = new Uri(Config.ApiHost);
 
-			var request = new RestRequest("/documentgroup/" + GroupId + "/groupinvite/" + InviteId, Method.GET)
+			var request = new RestRequest("/documentgroup/" + GroupId + "/groupinvite/" + InviteId, Method.Get)
 				.AddHeader("Accept", "application/json")
 				.AddHeader("Authorization", "Bearer " + AccessToken);
 
@@ -224,7 +224,7 @@ namespace CudaSign
 			var client = new RestClient();
 			client.BaseUrl = new Uri(Config.ApiHost);
 
-			var request = new RestRequest("/documentgroup/" + GroupId + "/groupinvite/" + InviteId + "/cancelinvite", Method.POST)
+			var request = new RestRequest("/documentgroup/" + GroupId + "/groupinvite/" + InviteId + "/cancelinvite", Method.Post)
 				.AddHeader("Accept", "application/json")
 				.AddHeader("Authorization", "Bearer " + AccessToken);
 
@@ -267,7 +267,7 @@ namespace CudaSign
 			var client = new RestClient();
 			client.BaseUrl = new Uri(Config.ApiHost);
 
-			var request = new RestRequest("/documentgroup/" + GroupId + "/groupinvite/" + InviteId + "/pendinginvites", Method.GET)
+			var request = new RestRequest("/documentgroup/" + GroupId + "/groupinvite/" + InviteId + "/pendinginvites", Method.Get)
 				.AddHeader("Accept", "application/json")
 				.AddHeader("Authorization", "Bearer " + AccessToken);
 
@@ -310,7 +310,7 @@ namespace CudaSign
 			var client = new RestClient();
 			client.BaseUrl = new Uri(Config.ApiHost);
 
-			var request = new RestRequest("/documentgroup/" + GroupId + "/groupinvite/" + InviteId + "/resendinvites", Method.POST)
+			var request = new RestRequest("/documentgroup/" + GroupId + "/groupinvite/" + InviteId + "/resendinvites", Method.Post)
 				.AddHeader("Accept", "application/json")
 				.AddHeader("Authorization", "Bearer " + AccessToken);
 
@@ -355,7 +355,7 @@ namespace CudaSign
 			var client = new RestClient();
 			client.BaseUrl = new Uri(Config.ApiHost);
 
-			var request = new RestRequest("/documentgroup/" + GroupId + "/groupinvite/" + InviteId + "/step/" + StepId, Method.POST)
+			var request = new RestRequest("/documentgroup/" + GroupId + "/groupinvite/" + InviteId + "/step/" + StepId, Method.Post)
 				.AddHeader("Accept", "application/json")
 				.AddHeader("Authorization", "Bearer " + AccessToken);
 
@@ -404,8 +404,8 @@ namespace CudaSign
 
 			// /documentgroup/uploadinvite
 			// /ZY385BVN
-			var request = new RestRequest("/documentgroup/uploadinvite", Method.POST)
-				//var request = new RestRequest("/ZY385BVN", Method.POST)
+			var request = new RestRequest("/documentgroup/uploadinvite", Method.Post)
+				//var request = new RestRequest("/ZY385BVN", Method.Post)
 				.AddHeader("Accept", "application/json")
 				.AddHeader("Authorization", "Bearer " + AccessToken);
 

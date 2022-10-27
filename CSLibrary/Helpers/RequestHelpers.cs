@@ -37,7 +37,7 @@ namespace CudaSign
 	/// </summary>
 	static class RequestHelpers
 	{
-		public static T GetResult<T>(this IRestResponse restResponse)
+		public static T GetResult<T>(this RestResponse restResponse)
 		{
 			return GetResult(restResponse).ToObject<T>(JsonHelpers.Serializer);
 		}
@@ -50,7 +50,7 @@ namespace CudaSign
 			return Equals(statusToken.Value<string>(), "success");
 		}
 
-		public static JToken GetResult(this IRestResponse restResponse)
+		public static JToken GetResult(this RestResponse restResponse)
 		{
 			JToken result = null;
 			if (restResponse.Content != null)
@@ -80,7 +80,7 @@ namespace CudaSign
 			return result;
 		}
 
-		public static IRestRequest AddJsonNetBody(this IRestRequest request, object data)
+		public static RestRequest AddJsonNetBody(this RestRequest request, object data)
 		{
 			var json = JsonConvert.SerializeObject(data, JsonHelpers.Settings);
 			request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);

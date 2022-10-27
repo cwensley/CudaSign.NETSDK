@@ -34,7 +34,7 @@ namespace CudaSign
 		{
 			var path = (extractFields) ? "/document/fieldextract" : "/document";
 
-			var request = client.CreateRequest(accessToken, path, Method.POST);
+			var request = client.CreateRequest(accessToken, path, Method.Post);
 
 			if (bytes != null)
 				request.AddFile("file", bytes, fileName);
@@ -57,7 +57,7 @@ namespace CudaSign
 		/// <returns>Document ID</returns>
 		public string Update(OAuth2Token accessToken, string documentId, UpdateRequest data)
         {
-			var request = client.CreateRequest(accessToken, "/document/" + documentId, Method.PUT);
+			var request = client.CreateRequest(accessToken, "/document/" + documentId, Method.Put);
 
             request.AddJsonNetBody(data);
 
@@ -78,7 +78,7 @@ namespace CudaSign
         {
 			var qsWithAnnotations = (withAnnotations) ? "?with_annotation=true" : "";
 
-			var request = client.CreateRequest(accessToken, "/document/" + documentId, Method.GET);
+			var request = client.CreateRequest(accessToken, "/document/" + documentId, Method.Get);
 
 			var response = client.Execute(request);
 
@@ -93,7 +93,7 @@ namespace CudaSign
         /// <returns><c>true</c> if successful, <c>false</c> otherwise</returns>
         public bool Delete(OAuth2Token accessToken, string documentId)
         {
-			var request = client.CreateRequest(accessToken, "/document/" + documentId, Method.DELETE);
+			var request = client.CreateRequest(accessToken, "/document/" + documentId, Method.Delete);
 
             var response = client.Execute(request);
 
@@ -111,7 +111,7 @@ namespace CudaSign
 		/// <returns>Collapsed document data in PDF format.</returns>
 		public byte[] Download(OAuth2Token accessToken, string documentId)
         {
-			var request = client.CreateRequest(accessToken, "/document/" + documentId + "/download?type=collapsed", Method.GET);
+			var request = client.CreateRequest(accessToken, "/document/" + documentId + "/download?type=collapsed", Method.Get);
 
             var response = client.Execute(request);
 
@@ -137,7 +137,7 @@ namespace CudaSign
         {
 			var disableEmailParam = (disableEmail) ? "?email=disable" : "";
 
-			var request = client.CreateRequest(accessToken, "/document/" + documentId + "/invite" + disableEmailParam, Method.POST);
+			var request = client.CreateRequest(accessToken, "/document/" + documentId + "/invite" + disableEmailParam, Method.Post);
 			request.AddJsonNetBody(inviteData);
 
 
@@ -155,7 +155,7 @@ namespace CudaSign
         /// <returns>{"status":"success"}</returns>
         public bool CancelInvite(OAuth2Token accessToken, string documentId)
         {
-			var request = client.CreateRequest(accessToken, "/document/" + documentId + "/fieldinvitecancel", Method.PUT);
+			var request = client.CreateRequest(accessToken, "/document/" + documentId + "/fieldinvitecancel", Method.Put);
 
             var response = client.Execute(request);
 
@@ -172,7 +172,7 @@ namespace CudaSign
         /// <returns>URL to download the document as a PDF</returns>
         public string Share(OAuth2Token accessToken, string documentId)
         {
-			var request = client.CreateRequest(accessToken, "/document/" + documentId + "/download/link", Method.POST);
+			var request = client.CreateRequest(accessToken, "/document/" + documentId + "/download/link", Method.Post);
 
             var response = client.Execute(request);
 
@@ -188,10 +188,9 @@ namespace CudaSign
 		/// <returns>The merged document data in PDF.</returns>
 		public byte[] Merge(OAuth2Token accessToken, string name, params string[] documentIds)
         {
-			var request = client.CreateRequest(accessToken, "/document/merge", Method.POST);
+			var request = client.CreateRequest(accessToken, "/document/merge", Method.Post);
 
-            request.RequestFormat = DataFormat.Json;
-            request.AddBody(new { name = name, document_ids = documentIds });
+            request.AddJsonBody(new { name = name, document_ids = documentIds });
 
             var response = client.Execute(request);
 
@@ -209,7 +208,7 @@ namespace CudaSign
         /// <returns>Array of history for the document.</returns>
         public dynamic History(string AccessToken, string DocumentId, string ResultFormat = "JSON")
         {
-            var request = new RestRequest("/document/" + DocumentId + "/history", Method.GET)
+            var request = new RestRequest("/document/" + DocumentId + "/history", Method.Get)
                 .AddHeader("Accept", "application/json")
                 .AddHeader("Authorization", "Bearer " + AccessToken);
 
@@ -241,10 +240,9 @@ namespace CudaSign
 
 		public bool Move(OAuth2Token accessToken, string documentId, string newFolderId)
 		{
-			var request = client.CreateRequest(accessToken, "/document/" + documentId + "/move", Method.POST);
+			var request = client.CreateRequest(accessToken, "/document/" + documentId + "/move", Method.Post);
 
-			request.RequestFormat = DataFormat.Json;
-			request.AddBody(new { folder_id = newFolderId });
+			request.AddJsonBody(new { folder_id = newFolderId });
 
 			var response = client.Execute(request);
 

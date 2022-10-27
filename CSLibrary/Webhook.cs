@@ -30,7 +30,7 @@ namespace CudaSign
         /// <returns>List of Subscriptions</returns>
         public dynamic List(string AccessToken, string ResultFormat = "JSON")
         {
-            var request = new RestRequest("/event_subscription", Method.GET)
+            var request = new RestRequest("/event_subscription", Method.Get)
                 .AddHeader("Accept", "application/json")
                 .AddHeader("Authorization", "Bearer " + AccessToken);
 
@@ -70,17 +70,16 @@ namespace CudaSign
         /// <returns>ID, Created, Updated</returns>
         public dynamic Create(string AccessToken, string EventType, string CallbackUrl, string ResultFormat = "JSON")
         {
-            var request = new RestRequest("/event_subscription", Method.POST)
+            var request = new RestRequest("/event_subscription", Method.Post)
                 .AddHeader("Accept", "application/json")
                 .AddHeader("Authorization", "Bearer " + AccessToken);
 
-            request.RequestFormat = DataFormat.Json;
 
             dynamic jsonObj = new ExpandoObject();
             jsonObj.@event = EventType;
             jsonObj.callback_url = CallbackUrl;
 
-            request.AddBody(jsonObj);
+            request.AddJsonBody((object)jsonObj);
 
             var response = client.Execute(request);
 
@@ -117,7 +116,7 @@ namespace CudaSign
         /// <returns>{"status":"success"}</returns>
         public dynamic Delete(string AccessToken, string SubscriptionId, string ResultFormat = "JSON")
         {
-            var request = new RestRequest("/event_subscription/" + SubscriptionId, Method.DELETE)
+            var request = new RestRequest("/event_subscription/" + SubscriptionId, Method.Delete)
                 .AddHeader("Accept", "application/json")
                 .AddHeader("Authorization", "Bearer " + AccessToken);
 

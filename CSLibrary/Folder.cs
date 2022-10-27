@@ -28,7 +28,7 @@ namespace CudaSign
 		/// <returns>Folders, Document & Template Counts</returns>
 		public FolderList List(OAuth2Token token)
         {
-			var request = client.CreateRequest(token, "/folder", Method.GET);
+			var request = client.CreateRequest(token, "/folder", Method.Get);
 
             var response = client.Execute(request);
 
@@ -57,7 +57,7 @@ namespace CudaSign
 			if (sb.Length > 0)
 				sb.Insert(0, "?");
 
-			var request = client.CreateRequest(token, "/folder/" + folderId + sb.ToString(), Method.GET);
+			var request = client.CreateRequest(token, "/folder/" + folderId + sb.ToString(), Method.Get);
 
             var response = client.Execute(request);
 

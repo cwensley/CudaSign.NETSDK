@@ -67,7 +67,7 @@ namespace CudaSign
                 clientCredentials = client.EncodeClientCredentials(clientId, clientSecret);
             }
 
-            var request = new RestRequest("/user", Method.POST)
+            var request = new RestRequest("/user", Method.Post)
                 .AddHeader("Accept", "application/json")
                 .AddHeader("Authorization", "Basic " + client.EncodedClientCredentials);
 
@@ -85,7 +85,7 @@ namespace CudaSign
 		/// <returns>User Account Information</returns>
 		public UserDetail Get(OAuth2Token accessToken)
         {
-			var request = client.CreateRequest(accessToken, "/user", Method.GET);
+			var request = client.CreateRequest(accessToken, "/user", Method.Get);
 
             var response = client.Execute(request);
 
